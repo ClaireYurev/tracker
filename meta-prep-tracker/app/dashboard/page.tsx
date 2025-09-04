@@ -29,10 +29,10 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Today's Tasks */}
+        {/* Today&apos;s Tasks */}
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <h2 className="text-xl font-semibold mb-4">Today's Tasks</h2>
+            <h2 className="text-xl font-semibold mb-4">Today&apos;s Tasks</h2>
             <div className="space-y-3">
               {[
                 { title: 'SQL Practice', category: 'SQL', target: 4, unit: 'questions' },
