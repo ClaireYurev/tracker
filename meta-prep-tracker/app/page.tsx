@@ -26,7 +26,9 @@ function DashboardContent() {
     toggleTaskComplete, 
     setTaskNotes, 
     upsertDay,
-    incrementPomodoro 
+    incrementPomodoro,
+    seedDemoData,
+    hasSeededDemoData
   } = useTracker();
   
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -37,12 +39,20 @@ function DashboardContent() {
     setMounted(true);
   }, []);
 
-  // Initialize calendar on mount if no days exist
+  // Initialize calendar and seed demo data on mount
   useEffect(() => {
-    if (mounted && Object.keys(days).length === 0) {
-      initCalendar(settings.interviewDateISO);
+    if (mounted) {
+      // Seed demo data if not already seeded
+      if (!hasSeededDemoData) {
+        seedDemoData();
+      }
+      
+      // Initialize calendar if no days exist
+      if (Object.keys(days).length === 0) {
+        initCalendar(settings.interviewDateISO);
+      }
     }
-  }, [mounted, days, settings, initCalendar]);
+  }, [mounted, days, settings, initCalendar, seedDemoData, hasSeededDemoData]);
 
   // Get date from URL params or default to today
   useEffect(() => {

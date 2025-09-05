@@ -19,13 +19,18 @@ import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Dot } from 'lucide
 
 export default function CalendarPage() {
   const router = useRouter();
-  const { days } = useTracker();
+  const { days, seedDemoData, hasSeededDemoData } = useTracker();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    setCurrentMonth(new Date());
+    
+    if (!hasSeededDemoData) {
+      seedDemoData();
+    }
+  }, [seedDemoData, hasSeededDemoData]);
 
   if (!mounted) {
     return (
@@ -62,6 +67,19 @@ export default function CalendarPage() {
     router.push(`/?date=${dateISO}`);
   };
 
+
+  const hasActivity = (date: Date) => {
+    const dayEntry = getDayEntry(date);
+    const hasCompletedTasks = dayEntry.tasks.some(t => t.completed || (t.target && t.done >= t.target));
+    const hasPomodoros = (dayEntry.pomodoros || 0) > 0;
+    const hasNotes = dayEntry.notes && dayEntry.notes.trim().length > 0;
+    return hasCompletedTasks || hasPomodoros || hasNotes;
+  };
+
+  const jumpToToday = () => {
+    setCurrentMonth(new Date());
+  };
+
   const getDayEntry = (date: Date) => {
     const dateISO = formatISO(date);
     return days[dateISO];
@@ -87,6 +105,14 @@ export default function CalendarPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={jumpToToday}
+                className="mr-2"
+              >
+                Today
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
