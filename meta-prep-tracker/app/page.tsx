@@ -27,8 +27,7 @@ function DashboardContent() {
     setTaskNotes, 
     upsertDay,
     incrementPomodoro,
-    seedDemoData,
-    hasSeededDemoData
+
   } = useTracker();
   
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -42,17 +41,12 @@ function DashboardContent() {
   // Initialize calendar and seed demo data on mount
   useEffect(() => {
     if (mounted) {
-      // Seed demo data if not already seeded
-      if (!hasSeededDemoData) {
-        seedDemoData();
-      }
-      
       // Initialize calendar if no days exist
       if (Object.keys(days).length === 0) {
         initCalendar(settings.interviewDateISO);
       }
     }
-  }, [mounted, days, settings, initCalendar, seedDemoData, hasSeededDemoData]);
+  }, [mounted, days, settings, initCalendar]);
 
   // Get date from URL params or default to today
   useEffect(() => {
@@ -82,7 +76,12 @@ function DashboardContent() {
     if (!dayEntry) return;
     const task = dayEntry.tasks.find(t => t.id === taskId);
     if (!task) return;
-    setTaskProgress(selectedDate, taskId, task.done + delta);
+    
+    // Use 5-minute increments for System Design and Behavioral tasks
+    const increment = (task.category === "SystemDesign" || task.category === "Behavioral") ? 5 : 1;
+    const actualDelta = delta * increment;
+    
+    setTaskProgress(selectedDate, taskId, (task.done || 0) + actualDelta);
   };
 
   const handleTaskComplete = (taskId: string, completed: boolean) => {

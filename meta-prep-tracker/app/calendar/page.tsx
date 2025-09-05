@@ -19,18 +19,14 @@ import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Dot } from 'lucide
 
 export default function CalendarPage() {
   const router = useRouter();
-  const { days, seedDemoData, hasSeededDemoData } = useTracker();
+  const { days } = useTracker();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     setCurrentMonth(new Date());
-    
-    if (!hasSeededDemoData) {
-      seedDemoData();
-    }
-  }, [seedDemoData, hasSeededDemoData]);
+  }, []);
 
   if (!mounted) {
     return (
